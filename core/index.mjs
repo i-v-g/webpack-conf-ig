@@ -1,4 +1,4 @@
-import { baseDir, checkExt, importen } from './utils.mjs'
+import { url, cwd, checkPackage, importName } from './utils.mjs'
 
 export default async (wpEnv, wpArg, userOpt) => {
 
@@ -8,7 +8,7 @@ export default async (wpEnv, wpArg, userOpt) => {
       _:          userOpt,
       appName:    userOpt.appName || process.env.npm_package_name,
       appVersion: userOpt.appVersion || process.env.npm_package_version,
-      cwd:        baseDir(),
+      cwd:        cwd,
       mode:       mode,
       modeDev:    mode === 'development',
       modeNone:   mode === 'none',
@@ -20,18 +20,18 @@ export default async (wpEnv, wpArg, userOpt) => {
   };
 
   {
-    const repo = baseDir(baseDir(import.meta.url)('../repo/'));
+    const repo = url(import.meta.url, '../repo/');
     var dir = {
-      addon : baseDir(repo('addon/')),
-      config: baseDir(repo('config/')),
-      server: baseDir(repo('server/')),
-      watch : baseDir(repo('watch/')),
+      addon : url(repo('addon/')),
+      config: url(repo('config/')),
+      server: url(repo('server/')),
+      watch : url(repo('watch/')),
     }
   };
   
   {
     const configName = dir.config(userOpt.config || 'web.mjs');
-    var {main:conf, addons} = (await importen(configName))(arg);
+    var {main:conf, addons} = (await importName(configName))(arg);
   }
   
 /*
